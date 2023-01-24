@@ -1,4 +1,6 @@
-import jwt, datetime, os
+import jwt
+import datetime
+import os
 from flask import Flask, request
 from flask_mysqldb import MySQL
 
@@ -15,6 +17,10 @@ server.config["MYSQL_PORT"] = os.environ.get("MYSQL_PORT")
 
 @server.route("/login", methods=["POST"])
 def login():
+
+    """
+    An endpoint to get the json web token
+    """
     auth = request.authorization
     if not auth:
         return "missing credentials", 401
@@ -57,14 +63,17 @@ def validate():
     return decoded, 200
 
 
-def createJWT(username, secret, authz):
+def createJWT(username, secret, authz:bool):
+    """
+    A function to create a jwt token according to user nanme and secret
+    """
     return jwt.encode(
         {
             "username": username,
             "exp": datetime.datetime.now(tz=datetime.timezone.utc)
             + datetime.timedelta(days=1),
             "iat": datetime.datetime.utcnow(),
-            "admin": authz,
+            "admin": authz,# True or False to allow to access all our servicess
         },
         secret,
         algorithm="HS256",
