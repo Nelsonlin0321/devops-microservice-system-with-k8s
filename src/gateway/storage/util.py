@@ -1,4 +1,5 @@
-import pika, json
+import pika
+import json
 
 
 def upload(f, fs, channel, access):
@@ -21,6 +22,8 @@ def upload(f, fs, channel, access):
             body=json.dumps(message),
             properties=pika.BasicProperties(
                 delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
+                # make sure the queque message is still retained even pod
+                # restart or crash
             ),
         )
     except Exception as err:
